@@ -173,75 +173,35 @@
                 </div>
             </div>
             <div class="staff__desc">
-
+                <h2 class="desc-title">
+                    Опытные мастера
+                </h2>
+                <p class="desc-text">
+                    Каждый наш барбер имеет значительный опыт в сфере и делает свою работу <span class="txt-highlight">безупречно</span>.
+                </p>
+                <a href="#gallery" class="applyBtn">См. работы</a>
             </div>
         </div>
     </section>
     <section id="gallery">
-
+        <div class="container">
+            <ul class="gallery__examples">
+                <!-- <li class="gallery__item">
+                    <picture>
+                        <source srcset="images/haircut-samples/c1.webp" type="image/webp" class="gallery__image">
+                        <img src="images/landscape-placeholder.svg" alt="couldnt load webp image" class="gallery__image">
+                    </picture>
+                </li> -->
+            </ul>
+            <div class="gallery__cut-info">
+                <h1>Placeholder</h1>
+                <p>
+                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero, corporis? Vitae iste ratione quibusdam, fugiat, saepe sit temporibus hic tenetur velit porro voluptate nihil laudantium minima repellendus recusandae, sapiente voluptatem.
+                </p>
+            </div>
+        </div>
     </section>
     
-<script>
-const navItems = document.querySelectorAll(".nav__item");
-const staffCards = document.querySelectorAll(".staff__card");
-
-// staff cards
-const initialTransforms = [];
-let offset = -30;
-let scaleOffset = 0.85;
-let cardInd = 3;
-
-staffCards[0].style.zIndex = cardInd;
-cardInd--;
-initialTransforms.push('translateX(0px) scale(1)');
-
-for (let i = 1; i < staffCards.length; i++) {
-    const transform = `translateX(${offset}px) scale(${scaleOffset})`;
-    staffCards[i].style.transform = transform;
-    staffCards[i].style.zIndex = cardInd;
-    initialTransforms.push(transform);
-    cardInd--;
-    offset -= 60;
-    scaleOffset -= 0.1;
-}
-
-// навигация
-function setActive(id) {
-    navItems.forEach(item => item.classList.remove('active'));
-    const link = document.querySelector(`.nav__item a[href="#${id}"]`);
-    if (link) link.closest('.nav__item').classList.add('active');
-}
-
-navItems.forEach(item => {
-    item.addEventListener('click', function() {
-        let href = this.querySelector('a').getAttribute('href').replace('#', '');
-        setActive(href || 'main');
-    });
-});
-
-// скролл
-const sections = document.querySelectorAll('[id]');
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            setActive(entry.target.id);
-        }
-    });
-}, {
-    rootMargin: '-10% 0px -70% 0px',
-    threshold: 0
-});
-setActive('main');
-sections.forEach(s => {
-    if (s.id && s.offsetHeight > 50) observer.observe(s);
-});
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY < 100) {
-        setActive('main');
-    }
-});
-</script>
+<script src="js/main.js"></script>
 </body>
 </html>
