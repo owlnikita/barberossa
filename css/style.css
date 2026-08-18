@@ -11,6 +11,7 @@
     --color-text-visited: #e6dddd;
     --bg-color-btn: #e75252;
     --border-color: #fff7f7;
+    --border-color-dark: #dfdcdc;
     --gold: #C9A84C;
     --gold-light: #E8C97A;
 
@@ -19,7 +20,7 @@
 
     --text-highlight: #ffbb00;
     
-    --jet-brains-mono: "JetBrains+Mono";
+    --jet-brains-mono: "JetBrains Mono";
 
     /* font sizes */
     --regular-text: 1.5rem;
@@ -42,6 +43,7 @@ body {
     color: var(--color-text);
     font-size: var(--regular-text);
     height: 10000px;
+    box-sizing: border-box;
     
 }
 
@@ -320,33 +322,41 @@ a:visited {
     position: fixed;
     top: 0;
     left: 0;
-    width: 27px;
+    width: 100px;
     height: 100vh;
     overflow: hidden;
 }
 
 .barber {
-    width: 54px;
+    width: 36px;
     height: 100vh;
+    
+    /* Используем градиент с микро-сглаживанием стыков */
     background-image: repeating-linear-gradient(
-        -45deg,
-        blue 0rem,
-        blue 1rem,
-        #ccc 1rem,
-        #ccc 2rem,
-        red 2rem,
-        red 3rem,
-        #ccc 3rem,
-        #ccc 4rem
+        135deg,
+        #0055B8 0px,
+        #0055B8 35px,
+        #FFFFFF 35px,
+        #FFFFFF 70px,
+        #D62718 70px,
+        #D62718 105px,
+        #FFFFFF 105px,
+        #FFFFFF 140px
     );
-    background-size: 100vh 100vh;
-    background-position: 0 0;
-    animation: barberpole 10s infinite linear;
+
+    background-size: 100% 197.989838px;
+    
+    /* Сдвиг строго на 64px — ни микрона погрешности! */
+    animation: barberpole 3s linear infinite;
 }
 
 @keyframes barberpole {
-    from { background-position: 0 0; }
-    to { background-position: 100% 100%; }
+    from { 
+        background-position-y: 0; 
+    }
+    to { 
+        background-position-y: 197.989838px; 
+    }
 }
 
 /* STAFF */
@@ -454,12 +464,13 @@ a:visited {
         #937626
     );
     box-shadow: inset 0px 0px 25px 15px #00000063;
+    margin-top: 3rem;
 }
 
 #gallery .container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     padding: 2rem;
 }
 
@@ -487,4 +498,216 @@ a:visited {
 
 .gallery__cut-info {
     width: 40%;
+    height: auto;
+    margin: 1rem 0;
+    background-color: var(--gold);
+    box-shadow: inset 0 0px 10px -2px var(--color-bg);
+    padding: .5rem 1rem;
+}
+
+.cut-info__title {
+    position: relative;
+    font-family: var(--jet-brains-mono), serif;
+    font-size: var(--h2);
+    font-weight: 600;
+    width: 100%;
+    padding-left: 2rem;
+    line-height: 3rem;
+}
+
+.cut-info__title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    height: 80%;
+    width: 6px;
+    background-color: var(--color-prime);
+    transform: rotateZ(10deg) translateY(50%) translateX(1rem);
+}
+
+.cut-info__desc {
+    
+    font-size: 1.5rem;
+}
+
+/* CONTACTS  */
+
+#apply {
+    margin-top: 4rem;
+}
+
+.apply-form {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 2rem;
+    border-radius: 1rem;
+    /* 1. Semi-transparent background */
+    background: rgba(238, 214, 0, 0.089); 
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: inset 0 0px 2px 2px rgba(238, 214, 0, 0.445);
+    border-top: 1px solid var(--gold);  
+    border-left: 1px solid var(--gold);
+}
+
+.apply__field {
+    display: flex;
+    position: relative;
+    font-family: var(--jet-brains-mono);
+    max-width: 30rem;
+    width: 100%;
+    margin-top: 3rem;
+    align-items: center;
+}
+
+.field-input {
+    outline: none;
+    box-shadow: inset 2px 5px 10px #00000044;
+    border-radius: 100px;
+    width: 100%;
+    padding: 1rem;
+}
+
+.field-input::placeholder {
+    color: transparent;
+}
+
+.field-input:placeholder-shown ~ .field-label {
+    top: 50%;
+    cursor: text;
+    transform: translateY(-50%);
+}
+
+.field-input:focus::placeholder{
+    color: var(--gold);
+}
+
+.field-input:not(:placeholder-shown) ~ .field-label {
+    color: #fff;
+}
+
+.field-label{
+    position: absolute;
+    top: 0;
+    left: 1.5rem;
+    transform: translateY(-100%);
+    width: auto;
+    color: var(--gold);
+    pointer-events: none;
+    transition: all .2s ease;
+}
+
+.field-input:focus ~ .field-label {
+    position: absolute;
+    top: 0;
+    transform: translateY(-100%);
+    transition: all .2s ease;
+    
+}
+
+.field-phrase {
+    margin-right: 2rem;
+}
+
+.roundButton {
+    width: 3rem;
+    aspect-ratio: 1;
+    background-color: var(--gold);
+    background-image: url("../images/calendar-svgrepo-com.svg");
+    background-size: 2.5rem;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border-radius: 100px;
+}
+
+
+/* apply Popup */
+
+.applyPopup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    background: #000000a9;
+    width: 100vw;
+    height: 100vh;
+    z-index: 101;
+}
+
+.popup-box {
+    width: 60vw;
+    height: 70vh;
+    background: var(--gold);
+    margin: auto;
+    border-radius: 8px;
+}
+
+.calendar {
+    background: var(--gold-light);
+    border-radius: 4px;
+    width: 50%;
+    margin: 1rem;
+    padding: .5rem;
+}
+
+.cal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.calBtn {
+    background: var(--border-color);
+    color: var(--color-prime);
+    font-weight: 900;
+    margin: .5rem;
+    border-radius: 100px;
+    width: 2rem;
+    aspect-ratio: 1;
+    text-align: center;
+    transition: background .08s linear ;
+}
+
+.calBtn:hover {
+    background: var(--border-color-dark);
+}
+
+.monthYear {
+    font-family: "JetBrains Mono", serif;
+    font-weight: 700;
+}
+
+.dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-family: "JetBrains Mono", serif;
+    user-select: none;
+}
+
+.date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+    text-align: center;
+}
+
+#days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-family: "JetBrains Mono", serif;
+    cursor: default;
+}
+
+.activeDay {
+    border-radius: 100px;
+    background: var(--bg-color-btn);
+}
+
+.inactiveDay {
+    color: #ffffff63;
 }
