@@ -9,6 +9,7 @@ let scaleOffset = 0.85;
 let cardInd = 3;
 
 // gallery data
+const galFragment = document.createDocumentFragment();
 const fallbackImg = '../images/landscape-placeholder.svg';
 const galleryItemsData = [
     {
@@ -27,7 +28,7 @@ const galleryItemsData = [
     },
     {
         title: "Помпадур",
-        desc: "The Pompadour is all about big volume up front with a smooth, lifted shape that looks sharp and confident. The sides stay neatly tapered, while the top is kept longer and brushed back for strong movement, especially on straight hair. Blow-dry upward with a round brush, then finger-shape the height. Finish with Pomade for shine, control, and all-day hold without stiffness.",
+        desc: "Прическа «помпадур» – это большой объем спереди и гладкая, приподнятая форма, которая выглядит четко и уверенно. Боковые пряди аккуратно подстрижены, а верхняя часть остается длиннее и зачесывается назад для создания движения, особенно на прямых волосах. Высушите волосы феном, используя круглую щетку, затем придайте объем пальцами. Завершите укладку помадой для блеска, контроля и фиксации на весь день без жесткости.",
         sources: {
             webp: "../images/haircut-samples/c3.webp"
         }
@@ -53,8 +54,25 @@ const galleryItemsData = [
             webp: "../images/haircut-samples/c6.webp"
         }
     },
+    {
+        title: "Современный маллет",
+        desc: "A Modern Mullet for straight hair keeps the sides tight and clean while the back stays longer for a cool, edgy finish. The top is layered and slightly messy, giving natural lift and smooth movement without looking heavy. This is one of the most effortless Modern Mullet styles for men with straight hair who want clean contrast with a relaxed, layered finish. Blow-dry forward and up using your fingers, then rub in a small amount of Molding Paste to shape the layers and add flexible hold.",
+        sources: {
+            webp: "../images/haircut-samples/c7.webp"
+        }
+    },
+    {
+        title: "Берст-фейд",
+        desc: "Эта стрижка с переходом типа «burst fade» для прямых волос отличается плавным дугообразным контуром вокруг уха, что придает образу четкость и спортивный стиль, в то время как волосы сверху остаются короткими и текстурированными. Аккуратная окантовка на шее и плавный переход делают эту прическу отличным вариантом как для школы, так и для выходных. При укладке слегка приподнимите переднюю часть волос феном, а затем нанесите немного текстурирующей глины для фиксации, создания формы и придания легкого объема.",
+        sources: {
+            webp: "../images/haircut-samples/c8.webp"
+        }
+    },
 ];
 const gallery = document.querySelector(".gallery__examples"); // ul element
+
+const cutInfoTitle = document.querySelector('.cut-info__title');
+const cutInfoDesc = document.querySelector('.cut-info__desc');
 
 staffCards[0].style.zIndex = cardInd;
 cardInd--;
@@ -72,9 +90,15 @@ for (let i = 1; i < staffCards.length; i++) {
 
 // Карточки галлереи
 
+if (galleryItemsData.length > 0) {
+    cutInfoTitle.textContent = galleryItemsData[0].title;
+    cutInfoDesc.textContent = galleryItemsData[0].desc;
+}
+
 for (let i = 0; i < galleryItemsData.length; i++) {
     const gItem = document.createElement('li');
     gItem.className = 'gallery__item';
+    gItem.dataset.index = i;
 
     const picture = document.createElement('picture');
 
@@ -88,11 +112,26 @@ for (let i = 0; i < galleryItemsData.length; i++) {
     img.src = fallbackImg; // fallback
     img.alt = galleryItemsData[i].title;
     img.className = 'gallery__image';
+    img.loading = 'lazy';
+    img.decoding = 'async';
     picture.appendChild(img);
 
     gItem.appendChild(picture);
+    galFragment.appendChild(gItem);
+
     gallery.appendChild(gItem);
 }
+gallery.appendChild(galFragment);
+gallery.addEventListener('mouseover', (e) => {
+    const gItem = e.target.closest('.gallery__item');
+    if (!gItem) return;
+
+    const index = gItem.dataset.index;
+    cutInfoTitle.textContent = galleryItemsData[index].title;
+    cutInfoDesc.textContent = galleryItemsData[index].desc;
+});
+
+
 
 // навигация
 function setActive(id) {
@@ -131,3 +170,73 @@ window.addEventListener('scroll', () => {
         setActive('main');
     }
 });
+
+// calendar
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const monthYearElement = document.getElementById('monthYear')
+const dates = document.getElementById('dates');
+const days = document.getElementById('days');
+
+const currentDate = new Date();
+const actualDate = new Date();
+
+const calendarUpdate = () => {
+    const curMonth = currentDate.getMonth();
+    const curYear = currentDate.getFullYear();
+
+    const firstDay = new Date(curYear, curMonth, 0);
+    const lastDay = new Date(curYear, curMonth + 1, 0);
+    const totalDays = lastDay.getDate();
+
+    const firstDayIndex = firstDay.getDay();
+    const lastDayIndex = lastDay.getDay();
+    
+    let monthYearStr = currentDate.toLocaleString('default', {month: 'long', year: 'numeric'});
+    monthYearStr = monthYearStr.charAt(0).toUpperCase() + monthYearStr.slice(1);
+    monthYearElement.textContent = monthYearStr;
+
+    let datesHTML = '';
+
+    for (let i = firstDayIndex; i > 0; i--) {
+        const prevDate = new Date(curYear, curMonth, 0 - i + 1);
+        datesHTML += `<div class="date inactiveDay">${prevDate.getDate()}</div>`;
+    }
+
+    for (let i=1; i <= totalDays; i++) {
+        const date = new Date(curYear, curMonth, i);
+        const activeClass = date.toDateString() === new Date().toDateString() ? 'activeDay' : '';
+        datesHTML += `<div class="date ${activeClass}">${i}</div>`;
+    }
+
+    for (let i=1; i <= 6-lastDayIndex+1; i++) {
+        const nextDate = new Date(curYear, curMonth+1, i);
+        datesHTML += `<div class="date inactiveDay">${nextDate.getDate()}</div>`;
+    }
+    days.innerHTML = datesHTML;
+}
+
+calendarUpdate();
+const inactiveDays = document.querySelectorAll('inactiveDay');
+inactiveDays.forEach(() => {
+    
+});
+
+prevBtn.addEventListener('click', () => {
+    if (currentDate.getMonth()-1 < actualDate.getMonth()) {
+        return
+    }
+    currentDate.setMonth(currentDate.getMonth()-1);
+    calendarUpdate();
+});
+
+nextBtn.addEventListener('click', () => {
+    if (currentDate.getMonth() > actualDate.getMonth()+1) {
+        return
+    }
+    currentDate.setMonth(currentDate.getMonth()+1);
+    calendarUpdate();
+});
+
+
+
