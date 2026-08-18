@@ -9,6 +9,31 @@
     <title>Barberossa</title>
 </head>
 <body>
+    <div id="applyPopup" class="applyPopup">
+        <div class="popup-box" id="calendar">
+            <div class="calendar">
+                <div class="cal__header">
+                    <i id="prevBtn" class="calBtn">
+                        <
+                    </i>
+                    <span id="monthYear" class="monthYear"> </span>
+                    <i id="nextBtn" class="calBtn">
+                        >
+                    </i>
+                </div>
+                <ul class="dates">
+                    <li class="date">Пн</li>
+                    <li class="date">Вт</li>
+                    <li class="date">Ср</li>
+                    <li class="date">Чт</li>
+                    <li class="date">Пт</li>
+                    <li class="date">Сб</li>
+                    <li class="date">Вс</li>
+                </ul>
+                <div id="days"></div>
+            </div>
+        </div>
+    </div>
     <div class="barber-container">
         <div class="barber"></div>
     </div>
@@ -194,14 +219,35 @@
                 </li> -->
             </ul>
             <div class="gallery__cut-info">
-                <h1>Placeholder</h1>
-                <p>
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero, corporis? Vitae iste ratione quibusdam, fugiat, saepe sit temporibus hic tenetur velit porro voluptate nihil laudantium minima repellendus recusandae, sapiente voluptatem.
+                <h2 class="cut-info__title">Ирокез</h2>
+                <p class="cut-info__desc">
+                    В прическе «ирокез» боковые части коротко подстрижены, а центральная полоса остается длиннее и небрежнее, что придает объем и движение. Верхняя часть подстрижена рваными слоями, что позволяет прямым волосам легко подниматься, не выглядя жесткими. Высушите феном, направив пряди вверх, затем пальцами придайте форму «шипам» и зачесанным назад волосам. Завершите укладку текстурирующей глиной для сильной фиксации и матового текстурированного покрытия, которое держится весь день.
                 </p>
             </div>
         </div>
     </section>
-    
+    <section id="apply">
+        <div class="container">
+            <form action="" method="post" class="apply-form">
+                <h2 class="cut-info__title">
+                    Записаться
+                </h2>
+                <div class="apply__field">
+                    <input class="field-input" name="email" type="email" required placeholder="sample@gmail.com">
+                    <label class="field-label" for="email">Enter email</label>
+                </div>
+                <div class="apply__field">
+                    <input class="field-input" name="phone-number" type="tel" required placeholder="+7-XXX XXX-XX-XX">
+                    <label class="field-label" for="phone-number">Enter phone-number</label>
+                </div>
+                <div class="apply__field">
+                    <label for="chooseDate" class="field-phrase">Выберете дату</label>
+                    <input class="roundButton" type="button" value="">
+                </div>
+                
+            </form>
+        </div>
+    </section>
 <script src="js/main.js"></script>
 </body>
 </html>
