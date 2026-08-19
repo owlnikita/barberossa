@@ -57,6 +57,11 @@ a:visited {
     color: var(--color-text-visited);
 }
 
+hr {
+    height: 2px;
+    background: var(--color-prime);
+}
+
 .txt-highlight {
     color: var(--text-highlight);
 }
@@ -636,6 +641,7 @@ a:visited {
 }
 
 .popup-box {
+    display: flex;
     width: 60vw;
     height: 70vh;
     background: var(--gold);
@@ -711,4 +717,22 @@ a:visited {
     color: var(--color-text);
     border-radius: 100px;
     background: var(--bg-color-btn);
+}
+
+.slots {
+    font-family: var(--jet-brains-mono), serif;
+    padding: .5rem;
+}
+
+.slot-item {
+    background: var(--gold-light);
+    margin-top: 1rem;
+    border-radius: 4px;
+    padding: .5rem;
+}
+
+.time-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
