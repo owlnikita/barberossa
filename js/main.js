@@ -174,8 +174,7 @@ window.addEventListener('scroll', () => {
 // calendar
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-const monthYearElement = document.getElementById('monthYear')
-const dates = document.getElementById('dates');
+const monthYearElement = document.getElementById('monthYear');
 const days = document.getElementById('days');
 
 const currentDate = new Date();
@@ -217,9 +216,23 @@ const calendarUpdate = () => {
 }
 
 calendarUpdate();
-const inactiveDays = document.querySelectorAll('inactiveDay');
-inactiveDays.forEach(() => {
+
+
+days.addEventListener('click', (e) => {
+    const dayItem = e.target.closest('.date');
+    if (!dayItem) return;
+    const activeDay = document.querySelector('.activeDay');
+    const isInactive = dayItem?.classList.contains('inactiveDay');
     
+    if (dayItem) {
+        dayItem.classList.remove('inactiveDay');
+        dayItem.classList.add('activeDay');
+        if (activeDay) {
+            if (isInactive) dayItem.classList.add('inactiveDay');
+            activeDay.classList.remove('activeDay');
+        }
+        
+    }
 });
 
 prevBtn.addEventListener('click', () => {
