@@ -1,11 +1,10 @@
 const db = require('./connection');
 
-const createBooking = db.transaction((date, slotId, name, phone, email) => {
+const createBooking = db.transaction((slotId, name, phone, email) => {
     const slot = db.prepare(`
         SELECT capacity from slots
-        WHERE id = ? AND date = ? AND is_active = 1
+        WHERE id = ? AND is_active = 1
     `).get(slotId);
-    // TODO Сейчас не проверяется дата для слота 
 
     if (!slot) {
         throw new Error('SLOT_NOT_FOUND');
