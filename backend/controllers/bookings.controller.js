@@ -1,9 +1,9 @@
 const bookingsRepo = require('../database/bookings.repository');
 
 function createBooking(req, res) {
-    const { date, slotId, name, phone, email } = req.body;
+    const { slotId, name, phone, email } = req.body;
     
-    if (!date || !slotId || !name || !phone || !email) {
+    if ( !slotId || !name || !phone || !email ) {
         return res.status(400).json({ error: "every field is required", success: false })
     }
 
