@@ -7,7 +7,7 @@ db.exec(`
         name TEXT NOT NULL,
         email TEXT DEFAULT NULL,
         phone TEXT NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (slot_id) REFERENCES slots(id)
     )
 `);
