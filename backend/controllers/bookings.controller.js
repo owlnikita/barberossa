@@ -36,14 +36,20 @@ function createBooking(req, res) {
 }
 
 function getAvailableSlots (req, res) {
-    const { date } = req.body;
+    const { date } = req.query;
     if (!date) {
-        res.status(400).json({ error: 'date string is required', success: false });
+        return res.status(400).json({ error: 'date string is required', success: false });
     }
     
     try {
-        
+        const slots = bookingsRepo.getAvailableSlots(date);
+        return res.status(200).json({ slots, success: true });
     } catch (err) {
-        return res.status(400).json({ error: err.message, success: false });
+        return res.status(500).json({ error: err.message, success: false });
     }
+}
+
+module.exports = {
+    createBooking,
+    getAvailableSlots,
 }
