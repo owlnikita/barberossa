@@ -9,7 +9,7 @@
     <title>Barberossa</title>
 </head>
 <body>
-    <div id="applyPopup" class="applyPopup">
+    <div id="applyPopup" class="applyPopup hide">
         <div class="popup-box" id="calendar">
             <div class="calendar">
                 <div class="cal__header">
@@ -35,20 +35,9 @@
             <div class="slots">
                 <h3 class="quote-title">Доступные слоты</h3>
                 <hr>
-                <ul class="slots__items">
-                    <li class="slot-item">
-                        <label class="time-info">
-                            <span class="info-from-to">10:00 до 11:00</span>
-                            <input type="radio" name="slot" value="10:00-11:00" required>
-                        </label>
-                    </li>
-                    <li class="slot-item">
-                        <label class="time-info">
-                            <span class="info-from-to">11:00 до 11:30</span>
-                            <input type="radio" name="slot" value="11:00-11:30" required>
-                        </label>
-                    </li>
+                <ul id="slots__container" class="slots__items">
                 </ul>
+                <div id="confirmBtn" class="confirmBtn applyBtn">Подвердить</div>
             </div>
         </div>
     </div>
@@ -251,21 +240,39 @@
                     Записаться
                 </h2>
                 <div class="apply__field">
-                    <input class="field-input" name="email" type="email" required placeholder="sample@gmail.com">
-                    <label class="field-label" for="email">Enter email</label>
+                    <input class="field-input" id="name" name="name" type="text" required placeholder="Иван">
+                    <label class="field-label" for="name">Введите имя</label>
                 </div>
                 <div class="apply__field">
-                    <input class="field-input" name="phone-number" type="tel" required placeholder="+7-XXX XXX-XX-XX">
-                    <label class="field-label" for="phone-number">Enter phone-number</label>
+                    <input class="field-input" id="email" name="email" type="email" required placeholder="sample@gmail.com">
+                    <label class="field-label" for="email">Введите почту</label>
+                </div>
+                <div class="apply__field">
+                    <input class="field-input" id="phone-number" name="phone-number" type="tel" required placeholder="+7-XXX XXX-XX-XX">
+                    <label class="field-label" for="phone-number">Введите номер телефона</label>
                 </div>
                 <div class="apply__field">
                     <label for="chooseDate" class="field-phrase">Выберете дату</label>
-                    <input class="roundButton" type="button" value="">
+                    <input id="chooseDate" full-date="" class="roundButton" type="button" value="">
                 </div>
-                
+                <button id="applyBtn" type="submit" class="applyBtn">
+                    <span>Подвердить</span>
+                    <div class="checkmark-wrapper">
+                    <div class="success-wrapper">
+                        <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                            <!-- Заполняющийся круг -->
+                            <circle class="success-checkmark__circle" cx="26" cy="26" r="25" />
+                            <!-- Белая галочка -->
+                            <path class="success-checkmark__check" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                        </svg>
+                    </div>
+                </button>
             </form>
         </div>
     </section>
-<script src="js/main.js"></script>
+<script type="module" src="./js/utils.js"></script>
+<script type="module" src="./js/booking.js"></script>
+<script type="module" src="./js/slots.js" ></script>
+<script type="module" src="./js/main.js"></script>
 </body>
 </html>
