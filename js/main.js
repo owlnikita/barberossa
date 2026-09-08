@@ -1,3 +1,6 @@
+import { createBooking } from "./booking.js";
+import { handleDateClick } from "./slots.js";
+import { playSuccessAnimation } from "./utils.js";
 
 const navItems = document.querySelectorAll(".nav__item");
 const staffCards = document.querySelectorAll(".staff__card");
@@ -179,7 +182,9 @@ const days = document.getElementById('days');
 
 const currentDate = new Date();
 const actualDate = new Date();
+let selectedDate = null;
 
+console.log(selectedDate);
 const calendarUpdate = () => {
     const curMonth = currentDate.getMonth();
     const curYear = currentDate.getFullYear();
@@ -203,8 +208,19 @@ const calendarUpdate = () => {
     }
 
     for (let i=1; i <= totalDays; i++) {
-        const date = new Date(curYear, curMonth, i);
-        const activeClass = date.toDateString() === new Date().toDateString() ? 'activeDay' : '';
+        // Формируем строку вида YYYY-MM-DD для текущего дня в цикле
+        const dayStr = String(i).padStart(2, '0');
+        const monthStr = String(curMonth + 1).padStart(2, '0');
+        const formattedCurrentDate = `${curYear}-${monthStr}-${dayStr}`;
+
+        const isSelected = selectedDate === formattedCurrentDate;
+
+        const dateObj = new Date(curYear, curMonth, i);
+        const isToday = dateObj.toDateString() === new Date().toDateString();
+        let activeClass = '';
+        if (isSelected || (selectedDate === null && isToday)) {
+            activeClass = 'activeDay';
+        }
         datesHTML += `<div class="date ${activeClass}">${i}</div>`;
     }
 
@@ -213,6 +229,7 @@ const calendarUpdate = () => {
         datesHTML += `<div class="date inactiveDay">${nextDate.getDate()}</div>`;
     }
     days.innerHTML = datesHTML;
+
 }
 
 calendarUpdate();
@@ -220,19 +237,23 @@ calendarUpdate();
 
 days.addEventListener('click', (e) => {
     const dayItem = e.target.closest('.date');
-    if (!dayItem) return;
-    const activeDay = document.querySelector('.activeDay');
-    const isInactive = dayItem?.classList.contains('inactiveDay');
-    
-    if (dayItem) {
-        dayItem.classList.remove('inactiveDay');
-        dayItem.classList.add('activeDay');
-        if (activeDay) {
-            if (isInactive) dayItem.classList.add('inactiveDay');
-            activeDay.classList.remove('activeDay');
-        }
-        
+
+    if (!dayItem || dayItem.classList.contains('inactiveDay')) return;
+
+    const currentActive = days.querySelector('.activeDay');
+    if (currentActive) {
+        currentActive.classList.remove('activeDay');
     }
+
+    dayItem.classList.add('activeDay');
+
+    const curYear = currentDate.getFullYear();
+    const curMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const curDay = dayItem.textContent.padStart(2, '0');
+
+    selectedDate = `${curYear}-${curMonth}-${curDay}`;
+
+    handleDateClick(selectedDate);
 });
 
 prevBtn.addEventListener('click', () => {
@@ -251,5 +272,62 @@ nextBtn.addEventListener('click', () => {
     calendarUpdate();
 });
 
+const chooseDateBtn = document.getElementById('chooseDate');
+const applyBtn = document.getElementById('applyBtn');
+const applyPopup = document.getElementById('applyPopup');
+const popupBox = document.getElementById('calendar');
+const confirmBtn = document.getElementById('confirmBtn');
+const fieldPhrase = document.querySelector('.field-phrase');
+const formElem = document.querySelector('.apply-form');
 
+function openPopup() {
+    applyPopup.classList.remove('hide');
+}
+function closePopup() {
+    applyPopup.classList.add('hide');
+}
 
+function setAfterDate(callback) {
+    // const dateList = [currentDate.toLocaleString('default', { month: 'long' }), currentDate.getDate(), currentDate.getFullYear()];
+    // let fullDate = dateList.join('-')
+    // fullDate = fullDate.charAt(0).toUpperCase() + fullDate.slice(1);
+    fieldPhrase.textContent = selectedDate;
+    if (callback) {
+        callback();
+    }
+}
+
+chooseDateBtn.addEventListener('click', () => {
+    applyPopup.classList.remove('hide');
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closePopup();
+        }
+    });
+});
+
+chooseDateBtn.addEventListener('click', () => {
+    openPopup();
+})
+
+popupBox.addEventListener('click', e => {
+    e.stopPropagation();
+})
+
+applyPopup.addEventListener('click', () => {
+    closePopup();
+});
+
+confirmBtn.addEventListener('click', () => {
+    setAfterDate(closePopup);
+});
+
+formElem.addEventListener('submit', (e) => {
+    e.preventDefault(); 
+
+    const name = document.querySelector('#name');
+    const email = document.querySelector('#email');
+    const phone = document.querySelector('#phone-number');
+    const slotId = document.querySelector();
+    createBooking();
+})
