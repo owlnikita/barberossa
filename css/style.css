@@ -180,6 +180,14 @@ hr {
     color: var(--color-bg);
 }
 
+button.applyBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+    width: 30%;
+}
+
 /* BURGER MENU */
 
 .burgerContainer {
@@ -616,6 +624,7 @@ hr {
 }
 
 .roundButton {
+    position: relative;
     width: 3rem;
     aspect-ratio: 1;
     background-color: var(--gold);
@@ -624,6 +633,13 @@ hr {
     background-repeat: no-repeat;
     background-position: 50% 50%;
     border-radius: 100px;
+}
+
+.roundButton::after {
+    position: absolute;
+    content: attr(full-date);
+    right: 0;
+    color: #fff;
 }
 
 
@@ -638,6 +654,10 @@ hr {
     width: 100vw;
     height: 100vh;
     z-index: 101;
+}
+
+.applyPopup.hide {
+    display: none;
 }
 
 .popup-box {
@@ -720,8 +740,10 @@ hr {
 }
 
 .slots {
+    position: relative;
     font-family: var(--jet-brains-mono), serif;
     padding: .5rem;
+    height: 100%;
 }
 
 .slot-item {
@@ -735,4 +757,19 @@ hr {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.confirmBtn.applyBtn {
+    background: var(--color-prime);
+    color: #fff;
+}
+
+.confirmBtn.applyBtn:hover {
+    background: var(--color-prime-hover);
+}
+
+.confirmBtn {
+    position: absolute;
+    bottom: 1rem;
+    right: 2rem;
 }
