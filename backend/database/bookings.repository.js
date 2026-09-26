@@ -46,10 +46,23 @@ function getAvailableSlots(date) {
     `).all(date);
 }
 
+function createSlot(date, timeSlot, capacity, is_active=null) {
+    if (typeof(date) !== 'string') {
+        throw new Error('the argument has to be a string');
+    }
+    return db.prepare(`
+        INSERT INTO slots (date, time_slot, capacity, is_active)
+        VALUES (?, ?, ?, ?)
+        `).run(date, timeSlot, capacity, is_active);
+        // Доделай контроллер и проверь репозитории на уязвимости
+}
+
+
 
 
 module.exports = {
     createBooking,
+    createSlot,
     getBookingsBySlot,
     countBookingsForSlot,
     getAvailableSlots,
