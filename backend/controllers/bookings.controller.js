@@ -1,4 +1,12 @@
+/**
+ * @param { number } = is_active
+ * @param { string } = date
+ * @param { string } = timeSlot
+ */
+
 const bookingsRepo = require('../database/bookings.repository');
+const { validateDate, validateTimeSlot } = require('../utils/validation.js');
+
 
 function createBooking(req, res) {
     const { slotId, name, phone, email } = req.body;
@@ -7,29 +15,17 @@ function createBooking(req, res) {
         return res.status(400).json({ error: "every field is required", success: false })
     }
 
+    let validDate;
     try {
-        const parts = date.split('-');
-
-        if (parts.length !== 3) {
-            return res.status(400).json({ error: 'invalid date format, use YYYY-MM-DD', success: false });
-        }
-        const [year, month, day] = parts;
-
-        const cleanMonth = month.padStart(2, '0');
-        const cleanDay = day.padStart(2, '0');
-        const dateObj = new Date(`${year}-${cleanMonth}-${cleanDay}`);
-
-        if (isNaN(dateObj.getTime())) {
-            return res.status(400).json({ error: 'invalid date values', success: false });
-        }
-    } catch {
-        return res.status(400).json({ error: 'could not process date', success: false });
+        validDate = validateDate(date);
+    } catch(err) {
+        return res.status(400).json({ error: err.message, success: false });
     }
 
     try {
-        bookingsRepo.createBooking(date, slotId, name, phone, email);
+        bookingsRepo.createBooking(validDate, slotId, name, phone, email);
     } catch (err){
-        return res.status(409).json({ error: 'slot_is_already_taken', success: false });
+        return res.status(409).json({ error: err.message, success: false });
     }
 
     return res.status(201).json({ message: 'booking is created', success: true });    
@@ -49,7 +45,32 @@ function getAvailableSlots (req, res) {
     }
 }
 
+function createSlot(req, res) {
+    const { date, time_slot, capacity, is_active=1 } = req.body;
+
+    if (!date || !time_slot || !capacity) {
+        return res.status(400).json({ error: 'all fields are requiered', success: false})
+    }
+    if( typeof capacity !== 'number' || capacity < 0) {
+        return res.status(400).json({ error: "Invalid value for 'capacity'", success: false });
+    }
+
+    let validDate;
+    try {
+        validDate = validateDate(date);
+        validateTimeSlot(time_slot);
+        bookingsRepo.createSlot(date, time_slot, capacity, is_active);
+        return res.status(201).json({ message: "Created slot successfuly", success: true });
+        
+    } catch (err) {
+        return res.status(400).json({ error: err.message, success: false });
+    }
+
+
+}
+
 module.exports = {
     createBooking,
+    createSlot,
     getAvailableSlots,
 }
