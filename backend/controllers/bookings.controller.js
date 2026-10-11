@@ -15,15 +15,8 @@ function createBooking(req, res) {
         return res.status(400).json({ error: "every field is required", success: false })
     }
 
-    let validDate;
     try {
-        validDate = validateDate(date);
-    } catch(err) {
-        return res.status(400).json({ error: err.message, success: false });
-    }
-
-    try {
-        bookingsRepo.createBooking(validDate, slotId, name, phone, email);
+        bookingsRepo.createBooking(slotId, name, phone, email);
     } catch (err){
         return res.status(409).json({ error: err.message, success: false });
     }
