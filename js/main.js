@@ -1,8 +1,16 @@
-import { createBooking } from "./booking.js";
 import { handleDateClick } from "./slots.js";
 import { playSuccessAnimation } from "./utils.js";
+import { setLanguage, currentLanguage, translation } from "./i18n.js";
+import { onSubmit } from './handleRateLimit.js'
+import { validateContactFields } from './validation.js';
+import { redirectToTelegram } from './telegramVerification.js';
+import { requestEmailCode, verifyEmailCode } from './emailVerification.js';
 
 const navItems = document.querySelectorAll(".nav__item");
+const mobileHeader = document.querySelector(".mobile-header");
+const burgerButton = document.querySelector(".burgerContainer");
+const mobileNav = document.querySelector(".mobile-nav");
+const mobileNavItems = document.querySelectorAll(".mobile-nav__item");
 const staffCards = document.querySelectorAll(".staff__card");
 
 // staff cards
@@ -72,6 +80,16 @@ const galleryItemsData = [
         }
     },
 ];
+const galleryContentKeys = [
+    { title: "galleryMohawk", description: "galleryMohawkDescription" },
+    { title: "galleryShag", description: "galleryShagDescription" },
+    { title: "galleryPompadour", description: "galleryPompadourDescription" },
+    { title: "galleryMiddlePart", description: "galleryMiddlePartDescription" },
+    { title: "galleryMessyFringe", description: "galleryMessyFringeDescription" },
+    { title: "galleryTempleFade", description: "galleryTempleFadeDescription" },
+    { title: "galleryModernMullet", description: "galleryModernMulletDescription" },
+    { title: "galleryBurstFade", description: "galleryBurstFadeDescription" }
+];
 const gallery = document.querySelector(".gallery__examples"); // ul element
 
 const cutInfoTitle = document.querySelector('.cut-info__title');
@@ -92,10 +110,20 @@ for (let i = 1; i < staffCards.length; i++) {
 }
 
 // Карточки галлереи
+let selectedHaircutIndex = 0;
 
-if (galleryItemsData.length > 0) {
-    cutInfoTitle.textContent = galleryItemsData[0].title;
-    cutInfoDesc.textContent = galleryItemsData[0].desc;
+function selectHaircut(gItem) {
+    const index = Number(gItem.dataset.index);
+    const haircut = galleryItemsData[index];
+    const keys = galleryContentKeys[index];
+    if (!haircut || !keys) return;
+
+    selectedHaircutIndex = index;
+    cutInfoTitle.textContent = translation(keys.title);
+    cutInfoDesc.textContent = translation(keys.description);
+    gItem.querySelector("img").alt = translation(keys.title);
+    gallery.querySelectorAll('.gallery__item').forEach(item => item.classList.remove('is-selected'));
+    gItem.classList.add('is-selected');
 }
 
 for (let i = 0; i < galleryItemsData.length; i++) {
@@ -113,7 +141,7 @@ for (let i = 0; i < galleryItemsData.length; i++) {
 
     const img = document.createElement('img');
     img.src = fallbackImg; // fallback
-    img.alt = galleryItemsData[i].title;
+    img.alt = translation(galleryContentKeys[i].title);
     img.className = 'gallery__image';
     img.loading = 'lazy';
     img.decoding = 'async';
@@ -125,22 +153,33 @@ for (let i = 0; i < galleryItemsData.length; i++) {
     gallery.appendChild(gItem);
 }
 gallery.appendChild(galFragment);
+const initialGalleryItem = gallery.querySelector('.gallery__item');
+if (initialGalleryItem) {
+    selectHaircut(initialGalleryItem);
+}
+
 gallery.addEventListener('mouseover', (e) => {
     const gItem = e.target.closest('.gallery__item');
     if (!gItem) return;
 
-    const index = gItem.dataset.index;
-    cutInfoTitle.textContent = galleryItemsData[index].title;
-    cutInfoDesc.textContent = galleryItemsData[index].desc;
+    selectHaircut(gItem);
+});
+
+gallery.addEventListener('click', (e) => {
+    const gItem = e.target.closest('.gallery__item');
+    if (!gItem) return;
+
+    selectHaircut(gItem);
 });
 
 
 
 // навигация
 function setActive(id) {
-    navItems.forEach(item => item.classList.remove('active'));
-    const link = document.querySelector(`.nav__item a[href="#${id}"]`);
-    if (link) link.closest('.nav__item').classList.add('active');
+    document.querySelectorAll('.nav__item, .mobile-nav__item').forEach(item => item.classList.remove('active'));
+    document.querySelectorAll(`a[href="#${id}"]`).forEach(link => {
+        link.closest('.nav__item, .mobile-nav__item')?.classList.add('active');
+    });
 }
 
 navItems.forEach(item => {
@@ -148,6 +187,26 @@ navItems.forEach(item => {
         let href = this.querySelector('a').getAttribute('href').replace('#', '');
         setActive(href || 'main');
     });
+});
+
+mobileNavItems.forEach(item => {
+    item.addEventListener('click', function() {
+        const href = this.querySelector('a').getAttribute('href').replace('#', '');
+        setActive(href || 'main');
+        mobileHeader.classList.remove('is-open');
+
+        setMenuExpanded(false);
+    });
+});
+
+mobileNav.querySelector('.mobile-nav__button').addEventListener('click', () => {
+    mobileHeader.classList.remove('is-open');
+    setMenuExpanded(false);
+});
+
+burgerButton.addEventListener('click', () => {
+    const isExpanded = !mobileHeader.classList.contains("is-open");
+    setMenuExpanded(isExpanded);
 });
 
 // скролл
@@ -183,6 +242,7 @@ const days = document.getElementById('days');
 const currentDate = new Date();
 const actualDate = new Date();
 let selectedDate = null;
+let dateConfirmed = false;
 
 console.log(selectedDate);
 const calendarUpdate = () => {
@@ -196,8 +256,13 @@ const calendarUpdate = () => {
     const firstDayIndex = firstDay.getDay();
     const lastDayIndex = lastDay.getDay();
     
-    let monthYearStr = currentDate.toLocaleString('default', {month: 'long', year: 'numeric'});
-    monthYearStr = monthYearStr.charAt(0).toUpperCase() + monthYearStr.slice(1);
+    const monthKeys = [
+        "monthJanuary", "monthFebruary", "monthMarch", "monthApril",
+        "monthMay", "monthJune", "monthJuly", "monthAugust",
+        "monthSeptember", "monthOctober", "monthNovember", "monthDecember"
+    ];
+    const month = translation(monthKeys[curMonth]);
+    const monthYearStr = `${month} ${curYear}`;
     monthYearElement.textContent = monthYearStr;
 
     let datesHTML = '';
@@ -279,6 +344,143 @@ const popupBox = document.getElementById('calendar');
 const confirmBtn = document.getElementById('confirmBtn');
 const fieldPhrase = document.querySelector('.field-phrase');
 const formElem = document.querySelector('.apply-form');
+const emailInput = document.querySelector('#email');
+const phoneInput = document.querySelector('#phone-number');
+const emailError = document.querySelector('#email-error');
+const phoneError = document.querySelector('#phone-error');
+const telegramVerificationStatus = document.querySelector('#telegram-verification-status');
+const emailVerificationStatus = document.querySelector('#email-verification-status');
+const emailVerificationPopup = document.querySelector('#email-verification-popup');
+const emailCodeConfirmationForm = document.querySelector('#email-code-confirmation-form');
+const emailVerificationCode = document.querySelector('#email-verification-code');
+const emailCodeStatus = document.querySelector('#email-code-status');
+const emailCodeRecipient = document.querySelector('#email-code-recipient');
+let contactValidationAttempted = false;
+
+function setVerificationStatus(element, messageKey) {
+    element.hidden = !messageKey;
+    if (messageKey) {
+        element.dataset.i18n = messageKey;
+        element.textContent = translation(messageKey);
+    }
+}
+
+function closeEmailVerificationPopup() {
+    emailVerificationPopup.classList.add('hide');
+}
+
+function openEmailVerificationPopup() {
+    emailCodeConfirmationForm.reset();
+    setVerificationStatus(emailCodeStatus, null);
+    emailCodeRecipient.textContent = emailInput.value.trim();
+    emailVerificationPopup.classList.remove('hide');
+    emailVerificationCode.focus();
+}
+
+function renderContactValidation(errors) {
+    for (const [field, input, errorElement] of [
+        ['email', emailInput, emailError],
+        ['phone', phoneInput, phoneError]
+    ]) {
+        const messageKey = errors[field];
+        input.setAttribute('aria-invalid', String(Boolean(messageKey)));
+        errorElement.hidden = !messageKey;
+
+        if (messageKey) {
+            errorElement.dataset.i18n = messageKey;
+            errorElement.textContent = translation(messageKey);
+        }
+    }
+}
+
+for (const input of [emailInput, phoneInput]) {
+    input.addEventListener('input', () => {
+        if (contactValidationAttempted) {
+            renderContactValidation(validateContactFields({
+                email: emailInput.value,
+                phone: phoneInput.value
+            }));
+        }
+    });
+}
+
+document.querySelector('#telegram-verify-button').addEventListener('click', async () => {
+    const phone = phoneInput.value.trim();
+    const errors = validateContactFields({ email: emailInput.value, phone });
+    if (errors.phone) {
+        renderContactValidation(errors);
+        phoneInput.focus();
+        return;
+    }
+
+    try {
+        const result = await redirectToTelegram(phone);
+        setVerificationStatus(
+            telegramVerificationStatus,
+            result.status === 'not-configured' ? 'verificationNotConfigured' : 'telegramVerificationStarted'
+        );
+    } catch (error) {
+        setVerificationStatus(telegramVerificationStatus, 'verificationFailed');
+        console.error('Could not start Telegram verification.', error);
+    }
+});
+
+document.querySelector('#email-code-request-button').addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    const errors = validateContactFields({ email, phone: phoneInput.value });
+    if (errors.email) {
+        renderContactValidation(errors);
+        emailInput.focus();
+        return;
+    }
+
+    try {
+        const result = await requestEmailCode(email);
+        if (result.status === 'sent') {
+            setVerificationStatus(emailVerificationStatus, null);
+            openEmailVerificationPopup();
+            return;
+        }
+        setVerificationStatus(emailVerificationStatus, 'verificationNotConfigured');
+    } catch (error) {
+        setVerificationStatus(emailVerificationStatus, 'verificationFailed');
+        console.error('Could not send an email verification code.', error);
+    }
+});
+
+emailCodeConfirmationForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = emailInput.value.trim();
+    const code = emailVerificationCode.value.trim();
+
+    try {
+        const result = await verifyEmailCode(email, code);
+        if (result.status === 'verified') {
+            closeEmailVerificationPopup();
+            setVerificationStatus(emailVerificationStatus, 'emailVerificationComplete');
+            return;
+        }
+        setVerificationStatus(
+            emailCodeStatus,
+            result.status === 'invalid' ? 'emailCodeInvalid' : 'verificationNotConfigured'
+        );
+    } catch (error) {
+        setVerificationStatus(emailCodeStatus, 'verificationFailed');
+        console.error('Could not verify the email code.', error);
+    }
+});
+
+document.querySelector('#email-verification-close').addEventListener('click', closeEmailVerificationPopup);
+emailVerificationPopup.addEventListener('click', (event) => {
+    if (event.target === emailVerificationPopup) {
+        closeEmailVerificationPopup();
+    }
+});
+emailVerificationPopup.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeEmailVerificationPopup();
+    }
+});
 
 function openPopup() {
     applyPopup.classList.remove('hide');
@@ -292,6 +494,7 @@ function setAfterDate(callback) {
     // let fullDate = dateList.join('-')
     // fullDate = fullDate.charAt(0).toUpperCase() + fullDate.slice(1);
     fieldPhrase.textContent = selectedDate;
+    dateConfirmed = selectedDate !== null;
     if (callback) {
         callback();
     }
@@ -325,9 +528,89 @@ confirmBtn.addEventListener('click', () => {
 formElem.addEventListener('submit', (e) => {
     e.preventDefault(); 
 
-    const name = document.querySelector('#name');
-    const email = document.querySelector('#email');
-    const phone = document.querySelector('#phone-number');
-    const slotId = document.querySelector();
-    createBooking();
+    contactValidationAttempted = true;
+    const contactErrors = validateContactFields({
+        email: emailInput.value,
+        phone: phoneInput.value
+    });
+    renderContactValidation(contactErrors);
+
+    const firstInvalidContact = contactErrors.email
+        ? emailInput
+        : contactErrors.phone
+            ? phoneInput
+            : null;
+    if (firstInvalidContact) {
+        firstInvalidContact.focus();
+        return;
+    }
+
+    if (!document.querySelector('#name').reportValidity()) {
+        return;
+    }
+
+    const slotItem = document.querySelector('input[name="slot"]:checked');
+    if (!slotItem) {
+        formElem.querySelector('input[name="slot"]')?.reportValidity();
+        return;
+    }
+    const slotId = slotItem.getAttribute('slotid');
+    onSubmit({
+        name: document.querySelector('#name').value,
+        email: document.querySelector('#email').value,
+        phone: document.querySelector('#phone-number').value,
+        slotId: slotId,
+        callback: playSuccessAnimation
+    });
 })
+
+function updateBurgerLabel(){
+    const isExpanded = burgerButton.getAttribute("aria-expanded") === "true";
+    const key = isExpanded ? "closeMenu" : "openMenu";
+
+    burgerButton.setAttribute("aria-label", translation(key));
+}
+
+function setMenuExpanded(isExpanded) {
+    mobileHeader.classList.toggle("is-open", isExpanded);
+    burgerButton.setAttribute("aria-expanded", String(isExpanded));
+    updateBurgerLabel();
+}
+
+const languageToggles = document.querySelectorAll(".languageToggle");
+
+function updateLanguageToggleLabels() {
+    const key = currentLanguage === "ru" ? "switchToEnglish" : "switchToRussian";
+    languageToggles.forEach(button => {
+        button.textContent = translation(key);
+    });
+}
+
+function applyLanguage(language) {
+    setLanguage(language);
+    gallery.querySelectorAll(".gallery__item").forEach((item) => {
+        const keys = galleryContentKeys[Number(item.dataset.index)];
+        if (keys) {
+            item.querySelector("img").alt = translation(keys.title);
+        }
+    });
+    const selectedItem = gallery.querySelector(`[data-index="${selectedHaircutIndex}"]`);
+    if (selectedItem) {
+        selectHaircut(selectedItem);
+    }
+    calendarUpdate();
+    if (dateConfirmed) {
+        fieldPhrase.textContent = selectedDate;
+    }
+    updateBurgerLabel();
+    updateLanguageToggleLabels();
+}
+
+applyLanguage(currentLanguage);
+
+languageToggles.forEach((languageToggle) => {
+    languageToggle.addEventListener("click", () => {
+        const nextLanguage = currentLanguage === "ru" ? "en" : "ru";
+        applyLanguage(nextLanguage);
+    });
+});
