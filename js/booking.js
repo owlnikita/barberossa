@@ -1,3 +1,5 @@
+import { handleRateLimit } from "./handleRateLimit.js";
+
 const slotsCache = new Map();
 const STALE_AFTER = 15000; // 15 sec
 
@@ -56,7 +58,7 @@ export async function createBooking(name, email, phone, slotId, onSuccess) {
         return;
     }
 
-    const response = await fetch('http://api/bookings/book', {
+    const response = await fetch('http://localhost:3000/api/bookings/book', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -70,20 +72,22 @@ export async function createBooking(name, email, phone, slotId, onSuccess) {
         })
     });
 
-    if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
+    if (response.status === 429) {
+        handleRateLimit(response);
+        return console.error('Too many requests, try later');
     }
 
-    const data = response.json();
+    const data = await response.json();
 
-    if (!data.success) {
+    if (!response.ok) {
         return console.error('Could not create booking', data.error);
     }
 
+    
+
     if (typeof onSuccess === 'function') {
-        onSuccess(response);
+        onSuccess();
     }
 
     return data;
 }
-// доделай чепуху эту и получи данные с формы
