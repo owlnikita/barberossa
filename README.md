@@ -11,6 +11,7 @@ The project is designed to showcase a hair salon brand while giving users a way 
 - Booking calendar and slot selection UI
 - Available-slot lookup via REST API
 - Booking creation with validation and capacity checks
+- Per-IP request limits for the public booking API
 - SQLite database for persistent slot and appointment data
 - Admin-only slot creation endpoint using a secret header key
 
@@ -101,7 +102,38 @@ Example:
 PORT=3000
 DEBUG=true
 ADMIN_SECRET_KEY=change-me
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=100
+BOOKING_RATE_LIMIT_WINDOW_MS=900000
+BOOKING_RATE_LIMIT_MAX=5
+TRUST_PROXY_HOPS=0
 ```
+
+### Rate limiting
+
+The backend applies two independent in-memory limits, keyed by the request's client IP:
+
+- **Booking API limit:** all requests to `/api/bookings` share a limit of 100 requests per 15 minutes.
+- **Booking submission limit:** requests to `POST /api/bookings/book` also share a stricter limit of 5 submissions per 15 minutes. A submission counts against both limits.
+
+Each counter starts its window with that IP's first request. Once a limit is exceeded, the server responds with HTTP `429 Too Many Requests` and JSON:
+
+```json
+{
+  "success": false,
+  "error": "Too many requests. Please try again later."
+}
+```
+
+Requests count when they reach the limiter, including invalid submissions and responses that later fail validation; retries consume quota too.
+
+Rate-limit metadata is returned in the standard `RateLimit` and `RateLimit-Policy` headers, with `Retry-After` indicating how long to wait after a limit is reached. The browser booking flow does not need special setup; users can retry after the indicated interval.
+
+Tune the limits with `RATE_LIMIT_WINDOW_MS` and `RATE_LIMIT_MAX` for the API-wide limit, and `BOOKING_RATE_LIMIT_WINDOW_MS` and `BOOKING_RATE_LIMIT_MAX` for booking submissions. Window values are milliseconds and all four values must be positive integers; invalid values stop the backend at startup. Defaults are 900000 ms (15 minutes), 100 API requests, and 5 booking submissions.
+
+The client IP comes from Express's `req.ip`. `TRUST_PROXY_HOPS` defaults to `0`, so forwarded IP headers are not trusted. If the API is behind a reverse proxy, set this to the exact number of trusted proxy hops (for example, `1` for a single trusted proxy); do not enable proxy trust when clients can bypass that proxy.
+
+The default rate-limit store is in process memory: counters are cleared when the backend restarts, and separate backend instances do not share counters. This works for a single-process deployment. For multiple instances or workers, configure a shared store (such as Redis) before relying on the limits across the whole deployment.
 
 ## API Overview
 
