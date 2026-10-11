@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,73 +13,113 @@
         <div class="popup-box" id="calendar">
             <div class="calendar">
                 <div class="cal__header">
-                    <i id="prevBtn" class="calBtn">
-                        <
-                    </i>
+                    <button id="prevBtn" class="calBtn" type="button" data-i18n-aria-label="previousMonth" aria-label="Предыдущий месяц">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                    </button>
                     <span id="monthYear" class="monthYear"> </span>
-                    <i id="nextBtn" class="calBtn">
-                        >
-                    </i>
+                    <button id="nextBtn" class="calBtn" type="button" data-i18n-aria-label="nextMonth" aria-label="Следующий месяц">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </button>
                 </div>
                 <ul class="dates">
-                    <li class="date">Пн</li>
-                    <li class="date">Вт</li>
-                    <li class="date">Ср</li>
-                    <li class="date">Чт</li>
-                    <li class="date">Пт</li>
-                    <li class="date">Сб</li>
-                    <li class="date">Вс</li>
+                    <li class="date" data-i18n="weekdayMon">Пн</li>
+                    <li class="date" data-i18n="weekdayTue">Вт</li>
+                    <li class="date" data-i18n="weekdayWed">Ср</li>
+                    <li class="date" data-i18n="weekdayThu">Чт</li>
+                    <li class="date" data-i18n="weekdayFri">Пт</li>
+                    <li class="date" data-i18n="weekdaySat">Сб</li>
+                    <li class="date" data-i18n="weekdaySun">Вс</li>
                 </ul>
                 <div id="days"></div>
             </div>
             <div class="slots">
-                <h3 class="quote-title">Доступные слоты</h3>
+                <h3 class="quote-title" data-i18n="availableSlots">Доступные слоты</h3>
                 <hr>
                 <ul id="slots__container" class="slots__items">
                 </ul>
-                <div id="confirmBtn" class="confirmBtn applyBtn">Подвердить</div>
+                <button id="confirmBtn" class="confirmBtn applyBtn" type="button" data-i18n="confirm">Подтвердить</button>
             </div>
         </div>
+    </div>
+    <div id="rate-limit-notice" class="rate-limit-notice">
+        <span class="cross-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="auto" height="auto" fill="none" style="color: inherit;">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1" />
+                <path d="M15 9L9 15M9 9l6 6" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </span>
+        <span class="notice-message">
+            <span class="message-text" data-i18n="noticeMessage">
+                Too many requests. Try after
+            </span>
+            <span id="notice-timer" class="notice-timer">
+                0
+            </span> 
+        </span>
     </div>
     <div class="barber-container">
         <div class="barber"></div>
     </div>
-    <button class="burgerContainer">
-        <span class="burger"></span>
-    </button>
     <header class="header">
         <div class="container">
             <img src="images/logo.png" alt="logo" class="header__logo">
             <nav class="nav">
                 <ul class="nav__list">
+                    <li class="language-switch"><button class="languageToggle" type="button">Eng</button></li>
                     <li class="nav__item active">
-                        <a href="#main">Главная</a>
+                        <a href="#main" data-i18n="navHome">Главная</a>
                     </li>
                     <li class="nav__item">
-                        <a href="#staff">Сотрудники</a>
+                        <a href="#staff" data-i18n="navStaff">Сотрудники</a>
                     </li>
                     <li class="nav__item">
-                        <a href="#gallery">Галлерея</a>
+                        <a href="#gallery" data-i18n="navGallery">Галерея</a>
                     </li>
                     <li class="nav__item">
-                        <a href="#contacts">Контакты</a>
+                        <a href="#services" data-i18n="navServices">Услуги</a>
                     </li>
                     <li class="nav__item">
-                        <a href="#services">Услуги</a>
+                        <a href="#contacts" data-i18n="navContacts">Контакты</a>
                     </li>
                 </ul>
-                <a href="#apply" class="header_button applyBtn">
+                <a href="#apply" class="header_button applyBtn" data-i18n="applyBtn">
                     Записаться
                 </a>
             </nav>
         </div>
+    </header>
+    <header class="mobile-header">
+        <div class="mobile-header__bar">
+            <a href="#main" class="mobile-header__brand">
+                <img src="images/logo.png" alt="Barberossa" class="mobile-header__logo">
+                <span>Barberossa</span>
+            </a>
+            <button class="languageToggle" type="button">Eng</button>
+            <button class="burgerContainer" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileNav">
+                <span class="burger"></span>
+            </button>
+        </div>
+        <nav class="mobile-nav" id="mobileNav" data-i18n-aria-label="mobileNav">
+            <ul class="mobile-nav__list">
+                <li class="mobile-nav__item active"><a href="#main" data-i18n="navHome">Главная</a></li>
+                <li class="mobile-nav__item"><a href="#staff" data-i18n="navStaff">Сотрудники</a></li>
+                <li class="mobile-nav__item"><a href="#gallery" data-i18n="navGallery">Галерея</a></li>
+                <li class="mobile-nav__item"><a href="#services" data-i18n="navServices">Услуги</a></li>
+                <li class="mobile-nav__item"><a href="#contacts" data-i18n="navContacts">Контакты</a></li>
+            </ul>
+            <a href="#apply" class="applyBtn mobile-nav__button" data-i18n="applyBtn">Записаться</a>
+        </nav>
     </header>
     <main id="main">
         <div class="container">
             <div class="main__content">
                 <div class="main__quote">
                     <h3 class="quote-title">
-                        ТЫ ЗАСЛУЖИВАЕШЬ <span class="txt-highlight">ЛУЧШЕГО</span>
+                        <span data-i18n="quoteStart">ТЫ ЗАСЛУЖИВАЕШЬ</span> <span class="txt-highlight" data-i18n="quoteHighlight">ЛУЧШЕГО</span>
                     </h3>
                     <span class="ornament">
                         <?xml version="1.0" encoding="UTF-8"?>
@@ -164,24 +204,24 @@
                         </g>
                         </svg>
                     </span>
-                    <h3 class="quote-text">
-                        Садись в кресло. Остальное — наша работа.
+                    <h3 class="quote-text" data-i18n="quoteText">
+                        Садись в кресло. Все остальное — за нами.
                     </h3>
                 </div>
                 <div class="main__analytics">
-                    <img class="main__analytics-banner" src="images/banners/banner_gold.png" alt="banner_gold">
+                    <img class="main__analytics-banner" src="images/banners/banner_gold.png" alt="Панно Barberossa" data-i18n-alt="bannerAlt">
                     <div class="analytics-left">
                         <div class="analytics-phrase">
                             <span class="phrase-numbers">
                                 200+
                             </span>
-                            <span class="phrase-text">Положительных отзывов </span>
+                            <span class="phrase-text" data-i18n="positiveReviews">Положительных отзывов</span>
                         </div>  
                         <div class="analytics-phrase">
-                            <span class="phrase-numbers">
+                            <span class="phrase-numbers" data-i18n="rating">
                                 Рейтинг 5.0
                             </span>
-                            <span class="phrase-text">На Google картах</span>
+                            <span class="phrase-text" data-i18n="googleMaps">На картах Google</span>
                         </div>
                     </div>
                 </div>
@@ -192,26 +232,26 @@
         <div class="container">
             <div class="staff__cards">
                 <div class="staff__card">
-                    <img src="images/staffAvatars/b1.png" alt="staff-profile-image" class="staff__image">
-                    <span class="staff__name">Алексей</span>
+                    <img src="images/staffAvatars/b1.png" alt="Барбер Алексей" data-i18n-alt="staffImageAlexey" class="staff__image">
+                    <span class="staff__name" data-i18n="staffAlexey">Алексей</span>
                 </div>
                 <div class="staff__card">
-                    <img src="images/staffAvatars/b2.png" alt="staff-profile-image" class="staff__image">
-                    <span class="staff__name">Андрей</span>
+                    <img src="images/staffAvatars/b2.png" alt="Барбер Андрей" data-i18n-alt="staffImageAndrey" class="staff__image">
+                    <span class="staff__name" data-i18n="staffAndrey">Андрей</span>
                 </div>
                 <div class="staff__card">
-                    <img src="images/staffAvatars/b3.png" alt="staff-profile-image" class="staff__image">
-                    <span class="staff__name">Константин</span>
+                    <img src="images/staffAvatars/b3.png" alt="Барбер Константин" data-i18n-alt="staffImageKonstantin" class="staff__image">
+                    <span class="staff__name" data-i18n="staffKonstantin">Константин</span>
                 </div>
             </div>
             <div class="staff__desc">
                 <h2 class="desc-title">
-                    Опытные мастера
+                    <span data-i18n="staffTitle">Опытные мастера</span>
                 </h2>
                 <p class="desc-text">
-                    Каждый наш барбер имеет значительный опыт в сфере и делает свою работу <span class="txt-highlight">безупречно</span>.
+                    <span data-i18n="staffDescription">Каждый наш барбер имеет значительный опыт в сфере и делает свою работу</span> <span class="txt-highlight" data-i18n="impeccable">безупречно</span>.
                 </p>
-                <a href="#gallery" class="applyBtn">См. работы</a>
+                <a href="#gallery" class="applyBtn" data-i18n="seeWork">Смотреть работы</a>
             </div>
         </div>
     </section>
@@ -233,44 +273,172 @@
             </div>
         </div>
     </section>
+    <section id="services">
+        <div class="container">
+            <div class="services__heading">
+                <div>
+                    <span class="services__eyebrow" data-i18n="serviceEyebrow">Меню Barberossa / 01</span>
+                    <h2 class="services__title"><span data-i18n="serviceTitle">Ритуалы</span><br><span data-i18n="serviceTitleAccent">для своих</span></h2>
+                </div>
+                <p class="services__intro">
+                    <span data-i18n="serviceIntro">Не просто стрижка, а время, которое принадлежит вам. Подберём форму, ритм и настроение под ваш стиль.</span>
+                </p>
+            </div>
+            <div class="services__grid">
+                <article class="service-card service-card--featured">
+                    <span class="service-card__number">01</span>
+                    <div class="service-card__content">
+                        <h3 data-i18n="serviceRitualTitle">Барберский ритуал</h3>
+                        <p data-i18n="serviceRitualDescription">Стрижка ножницами и машинкой, горячее полотенце, оформление бороды и финальная укладка.</p>
+                    </div>
+                    <div class="service-card__footer">
+                        <span data-i18n="minutes75">75 минут</span>
+                        <strong>2 500 ₽</strong>
+                    </div>
+                </article>
+                <article class="service-card">
+                    <span class="service-card__number">02</span>
+                    <div class="service-card__content">
+                        <h3 data-i18n="servicePrecisionTitle">Точная стрижка</h3>
+                        <p data-i18n="servicePrecisionDescription">Идеальная форма и чистые переходы для тех, кто ценит аккуратность без лишних слов.</p>
+                    </div>
+                    <div class="service-card__footer">
+                        <span data-i18n="minutes45">45 минут</span>
+                        <strong>1 800 ₽</strong>
+                    </div>
+                </article>
+                <article class="service-card">
+                    <span class="service-card__number">03</span>
+                    <div class="service-card__content">
+                        <h3 data-i18n="serviceBeardTitle">Борода и контуры</h3>
+                        <p data-i18n="serviceBeardDescription">Моделирование, бритьё опасной бритвой и уход, который возвращает бороде характер.</p>
+                    </div>
+                    <div class="service-card__footer">
+                        <span data-i18n="minutes30">30 минут</span>
+                        <strong>1 200 ₽</strong>
+                    </div>
+                </article>
+                <article class="service-card">
+                    <span class="service-card__number">04</span>
+                    <div class="service-card__content">
+                        <h3 data-i18n="serviceStylingTitle">Укладка на выход</h3>
+                        <p data-i18n="serviceStylingDescription">Текстура, объём и стойкая фиксация — соберём образ для свидания, съёмки или важной встречи.</p>
+                    </div>
+                    <div class="service-card__footer">
+                        <span data-i18n="minutes30">30 минут</span>
+                        <strong>900 ₽</strong>
+                    </div>
+                </article>
+            </div>
+            <div class="services__bottom">
+                <span data-i18n="firstVisit">Первый визит?</span>
+                <a href="#apply" class="applyBtn" data-i18n="chooseTime">Выбрать время</a>
+            </div>
+        </div>
+    </section>
+    <section id="contacts">
+        <div class="container">
+            <div class="contacts__header">
+                <h2 class="cut-info__title" data-i18n="navContacts">Контакты</h2>
+                <p class="contacts__intro">
+                    <span data-i18n="contactsIntro">Будем рады видеть вас в Barberossa. Запишитесь онлайн или свяжитесь с нами удобным способом.</span>
+                </p>
+            </div>
+            <div class="contacts__details">
+                <address class="contacts__item">
+                    <span class="contacts__label" data-i18n="addressLabel">Адрес</span>
+                    <span data-i18n="address">г. Москва, ул. Барберская, 10</span>
+                </address>
+                <div class="contacts__item">
+                    <span class="contacts__label" data-i18n="phoneLabel">Телефон</span>
+                    <a href="tel:+79991234567">+7 (999) 123-45-67</a>
+                </div>
+                <div class="contacts__item">
+                    <span class="contacts__label" data-i18n="emailLabel">Электронная почта</span>
+                    <a href="mailto:info@barberossa.ru">info@barberossa.ru</a>
+                </div>
+                <div class="contacts__item">
+                    <span class="contacts__label" data-i18n="hoursLabel">Часы работы</span>
+                    <span data-i18n="openingHours">Ежедневно, 10:00–22:00</span>
+                </div>
+            </div>
+            <a href="#apply" class="applyBtn contacts__button" data-i18n="bookHaircut">Записаться на стрижку</a>
+        </div>
+    </section>
     <section id="apply">
         <div class="container">
-            <form action="" method="post" class="apply-form">
-                <h2 class="cut-info__title">
-                    Записаться
-                </h2>
-                <div class="apply__field">
-                    <input class="field-input" id="name" name="name" type="text" required placeholder="Иван">
-                    <label class="field-label" for="name">Введите имя</label>
-                </div>
-                <div class="apply__field">
-                    <input class="field-input" id="email" name="email" type="email" required placeholder="sample@gmail.com">
-                    <label class="field-label" for="email">Введите почту</label>
-                </div>
-                <div class="apply__field">
-                    <input class="field-input" id="phone-number" name="phone-number" type="tel" required placeholder="+7-XXX XXX-XX-XX">
-                    <label class="field-label" for="phone-number">Введите номер телефона</label>
-                </div>
-                <div class="apply__field">
-                    <label for="chooseDate" class="field-phrase">Выберете дату</label>
-                    <input id="chooseDate" full-date="" class="roundButton" type="button" value="">
-                </div>
-                <button id="applyBtn" type="submit" class="applyBtn">
-                    <span>Подвердить</span>
-                    <div class="checkmark-wrapper">
-                    <div class="success-wrapper">
-                        <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                            <!-- Заполняющийся круг -->
-                            <circle class="success-checkmark__circle" cx="26" cy="26" r="25" />
-                            <!-- Белая галочка -->
-                            <path class="success-checkmark__check" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                        </svg>
+            <div class="booking-layout">
+                <form action="" method="post" class="apply-form" novalidate>
+                    <h2 class="cut-info__title">
+                        <span data-i18n="bookingTitle">Записаться</span>
+                    </h2>
+                    <div class="apply__field">
+                        <input class="field-input" id="name" name="name" type="text" required placeholder="Иван" data-i18n-placeholder="namePlaceholder">
+                        <label class="field-label" for="name" data-i18n="nameLabel">Введите имя</label>
                     </div>
-                </button>
-            </form>
+                    <div class="apply__field">
+                        <input class="field-input" id="email" name="email" type="email" required placeholder="sample@gmail.com" aria-describedby="email-error">
+                        <label class="field-label" for="email" data-i18n="emailLabelInput">Введите почту</label>
+                        <span class="field-error" id="email-error" aria-live="polite" hidden></span>
+                    </div>
+                    <div class="apply__field">
+                        <input class="field-input" id="phone-number" name="phone-number" type="tel" required placeholder="+7-XXX XXX-XX-XX" aria-describedby="phone-error">
+                        <label class="field-label" for="phone-number" data-i18n="phoneLabelInput">Введите номер телефона</label>
+                        <span class="field-error" id="phone-error" aria-live="polite" hidden></span>
+                    </div>
+                    <div class="apply__field">
+                        <label for="chooseDate" class="field-phrase" data-i18n="chooseDate">Выберите дату</label>
+                        <input id="chooseDate" full-date="" class="roundButton" type="button" value="">
+                    </div>
+                    <button id="applyBtn" type="submit" class="applyBtn">
+                        <span data-i18n="submitBooking" id="submit-btn-text">Подтвердить</span>
+                        <div class="checkmark-wrapper">
+                        <div class="success-wrapper">
+                            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                <!-- Заполняющийся круг -->
+                                <circle class="success-checkmark__circle" cx="26" cy="26" r="25" />
+                                <!-- Белая галочка -->
+                                <path class="success-checkmark__check" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                            </svg>
+                            </div>
+                        </div>
+                    </button>
+                </form>
+                <aside class="verification-panel" aria-labelledby="verification-title">
+                    <h2 class="cut-info__title" id="verification-title" data-i18n="verificationTitle">Подтверждение контактов</h2>
+                    <p class="verification-note" data-i18n="verificationOptional">Необязательно. Запись можно отправить без подтверждения.</p>
+                    <section class="verification-option">
+                        <h3 data-i18n="telegramVerificationTitle">Подтвердить телефон через Telegram</h3>
+                        <p data-i18n="telegramVerificationDescription">Откройте Telegram-бот, чтобы подтвердить номер телефона.</p>
+                        <button class="applyBtn verification-button" id="telegram-verify-button" type="button" data-i18n="telegramVerificationButton">Продолжить в Telegram</button>
+                        <p class="verification-status" id="telegram-verification-status" aria-live="polite" hidden></p>
+                    </section>
+                    <section class="verification-option">
+                        <h3 data-i18n="emailVerificationTitle">Подтвердить электронную почту</h3>
+                        <p data-i18n="emailVerificationDescription">Код будет отправлен на адрес из поля электронной почты в форме.</p>
+                        <button class="applyBtn verification-button" id="email-code-request-button" type="button" data-i18n="emailCodeRequestButton">Отправить код</button>
+                        <p class="verification-status" id="email-verification-status" aria-live="polite" hidden></p>
+                    </section>
+                </aside>
+            </div>
+        </div>
+        <div class="applyPopup verification-popup hide" id="email-verification-popup">
+            <section class="verification-dialog" role="dialog" aria-modal="true" aria-labelledby="email-verification-dialog-title">
+                <button class="verification-close" id="email-verification-close" type="button" aria-label="Закрыть" data-i18n-aria-label="closeDialog">&times;</button>
+                <h2 class="cut-info__title" id="email-verification-dialog-title" data-i18n="emailCodeDialogTitle">Подтверждение электронной почты</h2>
+                <p id="email-code-recipient"></p>
+                <form id="email-code-confirmation-form">
+                    <label class="verification-code-label" for="email-verification-code" data-i18n="emailCodeLabel">Код подтверждения</label>
+                    <input class="field-input" id="email-verification-code" name="code" type="text" required autocomplete="one-time-code" inputmode="numeric">
+                    <p class="verification-status" id="email-code-status" aria-live="polite" hidden></p>
+                    <button class="applyBtn verification-button" id="email-code-confirm-button" type="submit" data-i18n="emailCodeConfirmButton">Подтвердить код</button>
+                </form>
+            </section>
         </div>
     </section>
 <script type="module" src="./js/utils.js"></script>
+<script type="module" src="./js/handleRateLimit.js"></script>
+<script type="module" src="./js/i18n.js"></script>
 <script type="module" src="./js/booking.js"></script>
 <script type="module" src="./js/slots.js" ></script>
 <script type="module" src="./js/main.js"></script>
