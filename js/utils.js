@@ -4,7 +4,11 @@
 
 export function playSuccessAnimation(target='.success-checkmark') {
     const element = typeof target === 'string' ? document.querySelector(target) : target;
-    if (!element) return;
+    if (!element) {
+        console.log("Couldn't find the target element.");
+        return;
+    };
+    console.log(element);
 
     // reset animation if was playing earlier
     element.classList.remove('animated');
